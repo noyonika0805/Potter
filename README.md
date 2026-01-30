@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Pottermore: The Journey Begins</title>
+    <title>Pottermore | Interactive Experience</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Spectral:italic,wght@0,400;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Spectral:ital,wght@0,400;1,400&display=swap');
 
         :root {
             --parchment: #f4e4bc;
@@ -17,186 +17,194 @@
             background: #050505;
             font-family: 'Spectral', serif;
             color: var(--ink);
-            overflow: hidden;
+            height: 100vh; overflow: hidden;
         }
 
-        #game-world {
-            position: relative;
+        /* --- STAGE SYSTEM --- */
+        .stage {
+            display: none;
             width: 100vw; height: 100vh;
-            display: flex; justify-content: center; align-items: center;
+            position: relative;
+            animation: fadeIn 1s ease-in;
         }
+
+        #stage-letter { display: flex; justify-content: center; align-items: center; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* --- THE LETTER --- */
-        #letter-scene {
-            position: absolute;
-            z-index: 100;
-            width: 400px;
+        #letter {
+            width: 450px;
             background: #fffef0;
-            padding: 40px;
+            padding: 50px;
             box-shadow: 0 0 50px rgba(0,0,0,0.8);
             border: 1px solid #ddd;
-            transform: rotate(-2deg);
+            transform: rotate(-1deg);
             cursor: pointer;
-            transition: 0.5s;
+            text-align: center;
         }
 
-        #letter-scene:hover { transform: rotate(0deg) scale(1.02); }
-
-        #letter-scene.hidden { display: none; }
-
-        .wax-seal {
-            width: 60px; height: 60px;
-            background: #8b0000;
-            border-radius: 50%;
-            margin: 20px auto;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: bold; font-family: 'Cinzel';
+        .seal {
+            width: 60px; height: 60px; background: #8b0000;
+            border-radius: 50%; margin: 20px auto;
+            color: white; line-height: 60px; font-family: 'Cinzel';
         }
 
-        /* --- THE MAP / SHOPS --- */
+        /* --- DIAGON ALLEY --- */
         #diagon-alley {
-            display: none;
-            width: 100%; height: 100%;
             background: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=2000') center/cover;
-            position: relative;
         }
 
-        .shop-hotspot {
+        .shop-trigger {
             position: absolute;
-            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            background: rgba(0,0,0,0.6);
             border: 2px solid var(--gold);
+            color: white;
+            font-family: 'Cinzel';
             cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
             transition: 0.3s;
+            text-align: center;
         }
 
-        .shop-hotspot:hover { background: rgba(197, 160, 89, 0.3); }
-        .shop-label { 
-            color: white; font-family: 'Cinzel'; 
-            text-shadow: 2px 2px 4px #000; pointer-events: none;
-        }
+        .shop-trigger:hover { background: var(--gold); color: black; transform: scale(1.1); }
 
-        /* --- INTERIOR VIEW --- */
+        /* --- SHOP INTERIORS --- */
         #interior-view {
-            display: none;
-            position: absolute;
-            width: 80%; height: 70%;
-            background: var(--parchment);
-            border: 10px solid var(--ink);
-            box-shadow: 0 0 100px #000;
-            padding: 40px;
-            z-index: 50;
+            background-color: var(--parchment);
+            background-image: url('https://www.transparenttextures.com/patterns/pinstriped-suit.png');
+            flex-direction: column; align-items: center; justify-content: center;
         }
 
-        .item-to-find {
+        .item-box {
             display: inline-block;
-            margin: 15px; padding: 10px;
-            background: rgba(0,0,0,0.05);
-            border: 1px dashed var(--ink);
+            margin: 20px; padding: 20px;
+            border: 2px solid var(--ink);
             cursor: pointer;
+            transition: 0.2s;
         }
 
-        .item-to-find:hover { background: var(--gold); }
+        .item-box:hover { background: var(--gold); }
 
         /* --- HUD --- */
         #hud {
-            position: fixed; top: 20px; left: 20px;
+            position: fixed; top: 0; width: 100%;
             background: rgba(0,0,0,0.8); color: white;
-            padding: 10px 20px; border-radius: 30px;
-            font-family: 'Cinzel'; font-size: 14px;
+            padding: 15px; display: flex; justify-content: space-around;
+            font-family: 'Cinzel'; z-index: 1000;
         }
 
         .back-btn {
-            position: absolute; bottom: 20px; right: 20px;
-            padding: 10px 20px; background: var(--ink); color: white; border: none;
-            cursor: pointer; font-family: 'Cinzel';
+            margin-top: 30px; padding: 10px 30px;
+            background: var(--ink); color: white; border: none; cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-<div id="game-world">
-    
-    <div id="hud">Trunk: <span id="item-count">0</span>/3 Items Collected</div>
-
-    <div id="letter-scene" onclick="openLetter()">
-        <p>HOGWARTS SCHOOL <i>of</i> WITCHCRAFT <i>and</i> WIZARDRY</p>
-        <p>Dear Wizard,</p>
-        <p>We are pleased to inform you that you have been accepted at Hogwarts School of Witchcraft and Wizardry.</p>
-        <p>Please find enclosed a list of all necessary books and equipment.</p>
-        <div class="wax-seal">H</div>
-        <p style="text-align: center; font-size: 12px;">(Click to head to Diagon Alley)</p>
+    <div id="hud" style="display:none;">
+        <span>Trunk: <span id="trunk-count">0</span> / 3 Items Found</span>
+        <span id="location-name">Diagon Alley</span>
     </div>
 
-    <div id="diagon-alley">
-        <div class="shop-hotspot" style="top: 30%; left: 15%; width: 200px; height: 300px;" onclick="enterShop('books')">
-            <span class="shop-label">Flourish & Blotts</span>
-        </div>
-        <div class="shop-hotspot" style="top: 35%; right: 20%; width: 150px; height: 250px;" onclick="enterShop('wand')">
-            <span class="shop-label">Ollivanders</span>
-        </div>
-        <div class="shop-hotspot" style="bottom: 10%; left: 45%; width: 180px; height: 200px;" onclick="enterShop('potion')">
-            <span class="shop-label">Apothecary</span>
+    <div id="stage-letter" class="stage" style="display:flex;">
+        <div id="letter" onclick="startJourney()">
+            <h2 style="font-family: 'Cinzel'">HOGWARTS</h2>
+            <p><i>Dear Wizard,</i></p>
+            <p>You have been accepted to Hogwarts School of Witchcraft and Wizardry.</p>
+            <p>Click this letter to collect your supplies in Diagon Alley.</p>
+            <div class="seal">H</div>
         </div>
     </div>
 
-    <div id="interior-view">
-        <h2 id="interior-title">Shop Interior</h2>
-        <p id="interior-desc">Search the shelves for your items.</p>
-        <div id="items-container"></div>
-        <button class="back-btn" onclick="exitShop()">Return to Street</button>
+    <div id="stage-diagon" class="stage">
+        <div class="shop-trigger" style="top: 20%; left: 20%;" onclick="openShop('books')">
+            Flourish & Blotts<br><small>(Books)</small>
+        </div>
+        <div class="shop-trigger" style="top: 30%; right: 25%;" onclick="openShop('wand')">
+            Ollivanders<br><small>(Wands)</small>
+        </div>
+        <div class="shop-trigger" style="bottom: 20%; left: 45%;" onclick="openShop('potions')">
+            Apothecary<br><small>(Cauldrons)</small>
+        </div>
     </div>
 
-</div>
+    <div id="stage-interior" class="stage" style="display:none; flex-direction: column; align-items: center; justify-content: center;">
+        <h1 id="shop-title" style="font-family: 'Cinzel';">Shop Name</h1>
+        <p id="shop-desc">Find your items on the shelves.</p>
+        <div id="item-grid"></div>
+        <button class="back-btn" onclick="showDiagon()">Back to the Street</button>
+    </div>
 
-<script>
-    let inventory = [];
-    const totalItems = 3;
+    <script>
+        let inventory = [];
 
-    function openLetter() {
-        document.getElementById('letter-scene').classList.add('hidden');
-        document.getElementById('diagon-alley').style.display = 'block';
-    }
-
-    const shopData = {
-        'books': {
-            title: 'Flourish & Blotts',
-            desc: 'The shelves reach the ceiling. Find your spellbook!',
-            items: ['Standard Book of Spells', 'Ancient Runes', 'History of Magic'],
-            correct: 'Standard Book of Spells'
-        },
-        'wand': {
-            title: 'Ollivanders',
-            desc: 'Dusty boxes are everywhere. Find your wand box!',
-            items: ['Broken Stick', 'Holly Wand Box', 'Old Umbrella'],
-            correct: 'Holly Wand Box'
-        },
-        'potion': {
-            title: 'Slug & Jiggers',
-            desc: 'The smell is pungent. Find your Pewter Cauldron!',
-            items: ['Dragon Liver', 'Pewter Cauldron', 'Glass Phials'],
-            correct: 'Pewter Cauldron'
+        function startJourney() {
+            document.getElementById('stage-letter').style.display = 'none';
+            document.getElementById('stage-diagon').style.display = 'block';
+            document.getElementById('hud').style.display = 'flex';
         }
-    };
 
-    function enterShop(shopKey) {
-        const data = shopData[shopKey];
-        const interior = document.getElementById('interior-view');
-        const container = document.getElementById('items-container');
-        
-        document.getElementById('interior-title').innerText = data.title;
-        document.getElementById('interior-desc').innerText = data.desc;
-        container.innerHTML = '';
+        const shopData = {
+            'books': {
+                name: 'Flourish & Blotts',
+                desc: 'Find the Standard Book of Spells!',
+                items: ['History of Magic', 'Standard Book of Spells', 'Ancient Runes'],
+                target: 'Standard Book of Spells'
+            },
+            'wand': {
+                name: 'Ollivanders',
+                desc: 'The wand chooses the wizard. Pick a box.',
+                items: ['Old Box', 'Holly Wand', 'Bent Stick'],
+                target: 'Holly Wand'
+            },
+            'potions': {
+                name: 'Slug & Jiggers',
+                desc: 'Search for a Pewter Cauldron.',
+                items: ['Glass Phials', 'Bat Spleens', 'Pewter Cauldron'],
+                target: 'Pewter Cauldron'
+            }
+        };
 
-        data.items.forEach(item => {
-            let div = document.createElement('div');
-            div.className = 'item-to-find';
-            div.innerText = item;
-            div.onclick = () => collectItem(item, data.correct);
-            container.appendChild(div);
-        });
+        function openShop(id) {
+            const data = shopData[id];
+            document.getElementById('stage-diagon').style.display = 'none';
+            document.getElementById('stage-interior').style.display = 'flex';
+            
+            document.getElementById('shop-title').innerText = data.name;
+            document.getElementById('shop-desc').innerText = data.desc;
+            document.getElementById('location-name').innerText = data.name;
 
-        interior.style.display = 'block';
-    }
+            const grid = document.getElementById('item-grid');
+            grid.innerHTML = '';
+            
+            data.items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'item-box';
+                div.innerText = item;
+                div.onclick = () => {
+                    if(item === data.target) {
+                        if(!inventory.includes(item)) {
+                            inventory.push(item);
+                            document.getElementById('trunk-count').innerText = inventory.length;
+                            alert("Found it! Added to trunk.");
+                            if(inventory.length === 3) alert("You have everything! Ready for the Hogwarts Express?");
+                        } else {
+                            alert("You already have this!");
+                        }
+                    } else {
+                        alert("Not what you're looking for...");
+                    }
+                };
+                grid.appendChild(div);
+            });
+        }
 
-    function collectItem(clicked, correct) {
+        function showDiagon() {
+            document.getElementById('stage-interior').style.display = 'none';
+            document.getElementById('stage-diagon').style.display = 'block';
+            document.getElementById('location-name').innerText = "Diagon Alley";
+        }
+    </script>
+</body>
+</html>
