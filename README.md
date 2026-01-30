@@ -2,282 +2,201 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Pottermore | Re-Imagined</title>
+    <title>Pottermore: The Journey Begins</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Spectral:ital,wght@0,400;0,700;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Spectral:italic,wght@0,400;1,400&display=swap');
 
         :root {
-            --parchment: #fdf5e6;
+            --parchment: #f4e4bc;
             --ink: #2c2416;
             --gold: #c5a059;
-            --gryffindor: #740001; --slytherin: #1a472a;
-            --ravenclaw: #0e1a40; --hufflepuff: #ecb939;
         }
 
-        body {
+        body, html {
+            margin: 0; padding: 0;
             background: #050505;
-            background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
-            color: var(--ink);
             font-family: 'Spectral', serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            padding-top: 50px;
-            min-height: 100vh;
-        }
-
-        #wrapper {
-            width: 950px;
-            background: var(--parchment);
-            background-image: url('https://www.transparenttextures.com/patterns/papyrus.png');
-            border: 15px solid transparent;
-            border-image: url('https://www.transparenttextures.com/patterns/black-paper.png') 30 round;
-            box-shadow: 0 0 100px rgba(0,0,0,0.8);
-            padding: 40px;
-            border-radius: 2px;
-            position: relative;
-        }
-
-        header {
-            text-align: center;
-            border-bottom: 2px solid var(--ink);
-            margin-bottom: 30px;
-        }
-
-        h1 { font-family: 'Cinzel', serif; letter-spacing: 5px; margin: 10px 0; }
-
-        .stats-hud {
-            display: flex;
-            justify-content: space-between;
-            background: rgba(0,0,0,0.05);
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 14px;
-        }
-
-        #scene-viewport {
-            width: 100%;
-            height: 450px;
-            background-color: #000;
-            border: 4px solid var(--ink);
-            margin: 20px 0;
-            position: relative;
+            color: var(--ink);
             overflow: hidden;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            background-size: cover;
-            background-position: center;
-            transition: background-image 0.8s ease-in-out;
         }
 
-        #scene-overlay {
-            background: rgba(0,0,0,0.6);
-            color: white;
-            width: 100%;
-            padding: 20px;
-            text-align: center;
+        #game-world {
+            position: relative;
+            width: 100vw; height: 100vh;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        .action-menu {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        button {
-            background: var(--ink);
-            color: var(--parchment);
-            border: none;
-            padding: 12px;
-            font-family: 'Cinzel', serif;
+        /* --- THE LETTER --- */
+        #letter-scene {
+            position: absolute;
+            z-index: 100;
+            width: 400px;
+            background: #fffef0;
+            padding: 40px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            border: 1px solid #ddd;
+            transform: rotate(-2deg);
             cursor: pointer;
-            transition: 0.3s;
-            border: 1px solid var(--gold);
-        }
-
-        button:hover:not(:disabled) {
-            background: var(--gold);
-            color: #000;
-        }
-
-        button:disabled { opacity: 0.4; cursor: not-allowed; }
-
-        /* POTIONS MINI-GAME */
-        #potions-ui {
-            display: none;
-            background: rgba(255,255,255,0.5);
-            padding: 20px;
-            border: 2px solid var(--ink);
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .cauldron {
-            width: 80px; height: 80px;
-            background: #222;
-            border-radius: 50% 50% 30% 30%;
-            margin: 20px auto;
-            border: 5px solid #444;
             transition: 0.5s;
         }
 
-        .inventory-shelf {
-            margin-top: 30px;
-            border-top: 1px solid var(--ink);
-            padding-top: 10px;
-            font-size: 14px;
+        #letter-scene:hover { transform: rotate(0deg) scale(1.02); }
+
+        #letter-scene.hidden { display: none; }
+
+        .wax-seal {
+            width: 60px; height: 60px;
+            background: #8b0000;
+            border-radius: 50%;
+            margin: 20px auto;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: bold; font-family: 'Cinzel';
         }
 
-        #house-indicator {
-            padding: 5px 15px;
+        /* --- THE MAP / SHOPS --- */
+        #diagon-alley {
             display: none;
-            color: white;
-            border-radius: 20px;
+            width: 100%; height: 100%;
+            background: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=2000') center/cover;
+            position: relative;
+        }
+
+        .shop-hotspot {
+            position: absolute;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid var(--gold);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.3s;
+        }
+
+        .shop-hotspot:hover { background: rgba(197, 160, 89, 0.3); }
+        .shop-label { 
+            color: white; font-family: 'Cinzel'; 
+            text-shadow: 2px 2px 4px #000; pointer-events: none;
+        }
+
+        /* --- INTERIOR VIEW --- */
+        #interior-view {
+            display: none;
+            position: absolute;
+            width: 80%; height: 70%;
+            background: var(--parchment);
+            border: 10px solid var(--ink);
+            box-shadow: 0 0 100px #000;
+            padding: 40px;
+            z-index: 50;
+        }
+
+        .item-to-find {
+            display: inline-block;
+            margin: 15px; padding: 10px;
+            background: rgba(0,0,0,0.05);
+            border: 1px dashed var(--ink);
+            cursor: pointer;
+        }
+
+        .item-to-find:hover { background: var(--gold); }
+
+        /* --- HUD --- */
+        #hud {
+            position: fixed; top: 20px; left: 20px;
+            background: rgba(0,0,0,0.8); color: white;
+            padding: 10px 20px; border-radius: 30px;
+            font-family: 'Cinzel'; font-size: 14px;
+        }
+
+        .back-btn {
+            position: absolute; bottom: 20px; right: 20px;
+            padding: 10px 20px; background: var(--ink); color: white; border: none;
+            cursor: pointer; font-family: 'Cinzel';
         }
     </style>
 </head>
 <body>
 
-<div id="wrapper">
-    <header>
-        <h1>POTTERMORE</h1>
-        <div id="house-indicator">HOUSE: <span id="house-name"></span></div>
-    </header>
+<div id="game-world">
+    
+    <div id="hud">Trunk: <span id="item-count">0</span>/3 Items Collected</div>
 
-    <div class="stats-hud">
-        <span>Galleons: <span id="gold">0</span></span>
-        <span>Current Area: <span id="area">London</span></span>
+    <div id="letter-scene" onclick="openLetter()">
+        <p>HOGWARTS SCHOOL <i>of</i> WITCHCRAFT <i>and</i> WIZARDRY</p>
+        <p>Dear Wizard,</p>
+        <p>We are pleased to inform you that you have been accepted at Hogwarts School of Witchcraft and Wizardry.</p>
+        <p>Please find enclosed a list of all necessary books and equipment.</p>
+        <div class="wax-seal">H</div>
+        <p style="text-align: center; font-size: 12px;">(Click to head to Diagon Alley)</p>
     </div>
 
-    <div id="scene-viewport" style="background-image: url('https://images.unsplash.com/photo-1510133769067-2788a70fa9a9?auto=format&fit=crop&q=80&w=1000');">
-        <div id="scene-overlay">
-            <h2 id="scene-title">Privet Drive</h2>
-            <p id="scene-desc">An owl has arrived. Your journey to Hogwarts begins at Gringotts.</p>
+    <div id="diagon-alley">
+        <div class="shop-hotspot" style="top: 30%; left: 15%; width: 200px; height: 300px;" onclick="enterShop('books')">
+            <span class="shop-label">Flourish & Blotts</span>
+        </div>
+        <div class="shop-hotspot" style="top: 35%; right: 20%; width: 150px; height: 250px;" onclick="enterShop('wand')">
+            <span class="shop-label">Ollivanders</span>
+        </div>
+        <div class="shop-hotspot" style="bottom: 10%; left: 45%; width: 180px; height: 200px;" onclick="enterShop('potion')">
+            <span class="shop-label">Apothecary</span>
         </div>
     </div>
 
-    <div id="msg-box" style="text-align: center; color: #740001; font-weight: bold; margin-bottom: 10px;"></div>
-
-    <div class="action-menu">
-        <button onclick="goGringotts()" id="btn-bank">Gringotts Bank</button>
-        <button onclick="goOllivanders()" id="btn-wand" disabled>Ollivanders</button>
-        <button onclick="goApothecary()" id="btn-items" disabled>Apothecary</button>
-        <button onclick="goSorting()" id="btn-sort" disabled>Sorting Hat</button>
-        <button onclick="openPotions()" id="btn-brew" disabled>Brew Potions</button>
+    <div id="interior-view">
+        <h2 id="interior-title">Shop Interior</h2>
+        <p id="interior-desc">Search the shelves for your items.</p>
+        <div id="items-container"></div>
+        <button class="back-btn" onclick="exitShop()">Return to Street</button>
     </div>
 
-    <div id="potions-ui">
-        <h3>Standard Potion-Making</h3>
-        <p><i>Recipe: 2x Fangs, 1x Slime, then Ignite.</i></p>
-        <div id="cauldron-div" class="cauldron"></div>
-        <button onclick="addIng('Fangs')">Add Snake Fangs</button>
-        <button onclick="addIng('Slime')">Add Potion Base</button>
-        <button onclick="heat()">Heat Fire</button>
-        <button onclick="checkBrew()" style="background:green">Finish</button>
-    </div>
-
-    <div class="inventory-shelf">
-        <strong>Trunk:</strong> <span id="inv-items">Empty</span>
-    </div>
 </div>
 
 <script>
-    let gold = 0;
-    let items = [];
-    let house = null;
-    let cauldron = [];
-    let heated = false;
+    let inventory = [];
+    const totalItems = 3;
 
-    const scenes = {
-        gringotts: "https://images.unsplash.com/photo-1633515327230-b5e13768d742?auto=format&fit=crop&q=80&w=1000",
-        diagon: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=1000",
-        potions: "https://images.unsplash.com/photo-1581093196277-9f608fade137?auto=format&fit=crop&q=80&w=1000",
-        great_hall: "https://images.unsplash.com/photo-1547756536-cbe3673ff2e0?auto=format&fit=crop&q=80&w=1000"
+    function openLetter() {
+        document.getElementById('letter-scene').classList.add('hidden');
+        document.getElementById('diagon-alley').style.display = 'block';
+    }
+
+    const shopData = {
+        'books': {
+            title: 'Flourish & Blotts',
+            desc: 'The shelves reach the ceiling. Find your spellbook!',
+            items: ['Standard Book of Spells', 'Ancient Runes', 'History of Magic'],
+            correct: 'Standard Book of Spells'
+        },
+        'wand': {
+            title: 'Ollivanders',
+            desc: 'Dusty boxes are everywhere. Find your wand box!',
+            items: ['Broken Stick', 'Holly Wand Box', 'Old Umbrella'],
+            correct: 'Holly Wand Box'
+        },
+        'potion': {
+            title: 'Slug & Jiggers',
+            desc: 'The smell is pungent. Find your Pewter Cauldron!',
+            items: ['Dragon Liver', 'Pewter Cauldron', 'Glass Phials'],
+            correct: 'Pewter Cauldron'
+        }
     };
 
-    function update(msg) {
-        document.getElementById('gold').innerText = gold;
-        document.getElementById('inv-items').innerText = items.length > 0 ? items.join(", ") : "Empty";
-        if(msg) document.getElementById('msg-box').innerText = msg;
+    function enterShop(shopKey) {
+        const data = shopData[shopKey];
+        const interior = document.getElementById('interior-view');
+        const container = document.getElementById('items-container');
         
-        if(gold > 0) {
-            document.getElementById('btn-wand').disabled = false;
-            document.getElementById('btn-items').disabled = false;
-            document.getElementById('btn-sort').disabled = false;
-        }
-        if(items.includes("Cauldron")) document.getElementById('btn-brew').disabled = false;
+        document.getElementById('interior-title').innerText = data.title;
+        document.getElementById('interior-desc').innerText = data.desc;
+        container.innerHTML = '';
+
+        data.items.forEach(item => {
+            let div = document.createElement('div');
+            div.className = 'item-to-find';
+            div.innerText = item;
+            div.onclick = () => collectItem(item, data.correct);
+            container.appendChild(div);
+        });
+
+        interior.style.display = 'block';
     }
 
-    function goGringotts() {
-        gold = 50;
-        document.getElementById('scene-viewport').style.backgroundImage = `url(${scenes.gringotts})`;
-        document.getElementById('area').innerText = "Gringotts";
-        document.getElementById('scene-title').innerText = "Vault 687";
-        update("The Goblins grant you 50 Galleons.");
-    }
-
-    function goOllivanders() {
-        if(gold < 10) return update("Too poor!");
-        gold -= 10;
-        items.push("Wand");
-        document.getElementById('scene-viewport').style.backgroundImage = `url(${scenes.diagon})`;
-        update("The wand chooses the wizard! 10 Galleons spent.");
-    }
-
-    function goApothecary() {
-        if(gold < 15) return update("Too poor!");
-        gold -= 15;
-        items.push("Cauldron");
-        update("You bought a Pewter Cauldron. You can now brew potions.");
-    }
-
-    function goSorting() {
-        const houses = ['Gryffindor', 'Slytherin', 'Ravenclaw', 'Hufflepuff'];
-        house = houses[Math.floor(Math.random() * houses.length)];
-        document.getElementById('scene-viewport').style.backgroundImage = `url(${scenes.great_hall})`;
-        document.getElementById('house-indicator').style.display = "inline-block";
-        document.getElementById('house-indicator').style.background = `var(--${house.toLowerCase()})`;
-        document.getElementById('house-name').innerText = house;
-        update(`Better be... ${house}!`);
-    }
-
-    function openPotions() {
-        document.getElementById('potions-ui').style.display = "block";
-        document.getElementById('scene-viewport').style.backgroundImage = `url(${scenes.potions})`;
-    }
-
-    function addIng(ing) {
-        cauldron.push(ing);
-        update(`Added ${ing}`);
-    }
-
-    function heat() {
-        heated = true;
-        document.getElementById('cauldron-div').style.boxShadow = "0 0 20px orange";
-    }
-
-    function checkBrew() {
-        const success = cauldron.filter(x => x==='Fangs').length === 2 && 
-                        cauldron.includes('Slime') && heated;
-        
-        if(success) {
-            update("Success! Potion brewed perfectly.");
-            document.getElementById('cauldron-div').style.background = "cyan";
-        } else {
-            update("BOOM! The cauldron melted.");
-            document.getElementById('cauldron-div').style.background = "red";
-        }
-        cauldron = []; heated = false;
-        setTimeout(() => {
-            document.getElementById('cauldron-div').style.background = "#222";
-            document.getElementById('cauldron-div').style.boxShadow = "none";
-        }, 2000);
-    }
-</script>
-
-</body>
-</html>
+    function collectItem(clicked, correct) {
